@@ -7,20 +7,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+
 import com.supratim.craftsvilla.R;
+import com.supratim.craftsvilla.dashboardslider.SliderIndicator;
+import com.supratim.craftsvilla.dashboardslider.SliderPagerAdapter;
+import com.supratim.craftsvilla.dashboardslider.SliderView;
+import com.supratim.craftsvilla.fragments.FragmentSlider;
 import com.supratim.craftsvilla.fragments.ImageListFragment;
 import com.supratim.craftsvilla.miscellaneous.EmptyActivity;
 import com.supratim.craftsvilla.notification.NotificationCountSetClass;
 import com.supratim.craftsvilla.options.CartListActivity;
 import com.supratim.craftsvilla.options.SearchResultActivity;
-import com.supratim.craftsvilla.options.WishlistActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +33,10 @@ public class MainActivity extends AppCompatActivity
     public static int notificationCountCart = 0;
     static ViewPager viewPager;
     static TabLayout tabLayout;
+    private SliderPagerAdapter mAdapter;
+    private SliderIndicator mIndicator;
+    private SliderView sliderView;
+    private LinearLayout mLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +44,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        sliderView = (SliderView) findViewById(R.id.sliderView);
+        mLinearLayout = (LinearLayout) findViewById(R.id.pagesContainer);
+
 
 
          viewPager = (ViewPager) findViewById(R.id.viewpager);
+//////////////////////Autoslider Viewpager///////////////////////////////////////////
+        setupSlider();
 
          /////Load Images ////////////////////////////////////////////////////////////////
 
@@ -144,4 +156,20 @@ public class MainActivity extends AppCompatActivity
             return mFragmentTitles.get(position);
         }
     }
+
+
+             private void setupSlider() {
+                 sliderView.setDurationScroll(800);
+                 List<Fragment> fragments = new ArrayList<>();
+                 fragments.add(FragmentSlider.newInstance("https://i.pinimg.com/originals/06/55/d7/0655d77fba7ebd48b38b069b819838d3.jpg"));
+                 fragments.add(FragmentSlider.newInstance("https://i.pinimg.com/originals/32/be/d4/32bed4f8090db0669a3f407ebb28d628.jpg"));
+                 fragments.add(FragmentSlider.newInstance("https://i.pinimg.com/originals/de/de/ce/dedece7f5702ea4599dff0f57bdb33ed.jpg"));
+                 fragments.add(FragmentSlider.newInstance("https://i.pinimg.com/originals/8e/d3/db/8ed3db9f59dc2bc9ca72ac573b3acf38.jpg"));
+
+                 mAdapter = new SliderPagerAdapter(getSupportFragmentManager(), fragments);
+                 sliderView.setAdapter(mAdapter);
+                 mIndicator = new SliderIndicator(this, mLinearLayout, sliderView, R.drawable.indicator_circle);
+                 mIndicator.setPageCount(fragments.size());
+                 mIndicator.show();
+             }
 }
